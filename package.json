@@ -1,0 +1,44 @@
+{
+  "name": "@untools/gql-client",
+  "version": "1.0.0",
+  "description": "A simple GraphQL client for making requests in JavaScript/TypeScript applications",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "graphql",
+    "client",
+    "fetch",
+    "api",
+    "nextjs",
+    "react"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^22.13.10",
+    "typescript": "^5.8.2"
+  },
+  "peerDependencies": {
+    "typescript": "^4.0.0 || ^5.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/miracleonyenma/untools-gql-client.git"
+  },
+  "bugs": {
+    "url": "https://github.com/miracleonyenma/untools-gql-client/issues"
+  },
+  "homepage": "https://github.com/miracleonyenma/untools-gql-client#readme",
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}
