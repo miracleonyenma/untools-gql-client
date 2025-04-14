@@ -2,19 +2,24 @@ import { GraphQLRequestOptions, GraphQLResponse, Logger } from "./types";
 
 export const createGraphqlRequest = (
   defaultApiKey?: string,
-  defaultLogger?: Logger,
+  defaultLogger?: Logger
 ) => {
   const logger = defaultLogger || {
     log: console.log,
     error: console.error,
   };
 
-  return async function graphqlRequest<T>(
-    url: string,
-    options: GraphQLRequestOptions,
-    headers?: Record<string, string>,
-    apiKey?: string,
-  ): Promise<GraphQLResponse<T>> {
+  return async function graphqlRequest<T>({
+    url,
+    options,
+    headers = {},
+    apiKey,
+  }: {
+    url: string;
+    options: GraphQLRequestOptions;
+    headers?: Record<string, string>;
+    apiKey?: string;
+  }): Promise<GraphQLResponse<T>> {
     try {
       const effectiveApiKey = apiKey || defaultApiKey;
 

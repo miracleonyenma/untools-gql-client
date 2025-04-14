@@ -4,7 +4,7 @@ import { createGraphqlRequest } from "./graphqlRequest";
 export const createExecuteGraphQL = (
   defaultApiUrl?: string,
   defaultApiKey?: string,
-  defaultLogger?: Logger,
+  defaultLogger?: Logger
 ) => {
   const logger = defaultLogger || {
     log: console.log,
@@ -15,7 +15,7 @@ export const createExecuteGraphQL = (
 
   return async function executeGraphQL<
     TResponse,
-    TVariables extends Record<string, unknown> | undefined,
+    TVariables extends Record<string, unknown> | undefined
   >({
     query,
     variables,
@@ -24,17 +24,17 @@ export const createExecuteGraphQL = (
   }: GraphQLRequestParams<TVariables>): Promise<TResponse> {
     if (!url) {
       throw new Error(
-        "GraphQL API URL is required. Either provide it in the request or set a default URL.",
+        "GraphQL API URL is required. Either provide it in the request or set a default URL."
       );
     }
 
     try {
-      const response = await graphqlRequest<TResponse>(
+      const response = await graphqlRequest<TResponse>({
         url,
-        { query, variables },
+        options: { query, variables },
         headers,
-        defaultApiKey,
-      );
+        apiKey: defaultApiKey,
+      });
 
       if (response.errors) {
         throw new Error(response.errors[0].message);
@@ -48,7 +48,7 @@ export const createExecuteGraphQL = (
     } catch (error: unknown) {
       logger.error("GraphQL request error:", error);
       throw new Error(
-        (error as { message: string }).message || "Unknown error occurred.",
+        (error as { message: string }).message || "Unknown error occurred."
       );
     }
   };
