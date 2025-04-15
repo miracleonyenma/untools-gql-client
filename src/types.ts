@@ -27,10 +27,10 @@ export interface GraphQLClientConfig {
 }
 
 export interface GraphQLRequestParams<
-  TVariables extends Record<string, unknown> | undefined,
+  TVariables extends Record<string, unknown> | undefined
 > {
   query: string;
-  variables: TVariables;
+  variables?: TVariables;
   headers?: { [key: string]: string };
   url?: string;
 }
