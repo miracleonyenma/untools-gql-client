@@ -7,11 +7,13 @@ export * from "./types";
 export class GraphQLClient {
   private apiUrl?: string;
   private apiKey?: string;
+  private headers?: Record<string, string>;
   private logger!: Logger;
 
   constructor(config: GraphQLClientConfig = {}) {
     this.apiUrl = config.apiUrl;
     this.apiKey = config.apiKey;
+    this.headers = config.headers;
     this.logger = config.logger || {
       log: console.log,
       error: console.error,
@@ -36,5 +38,5 @@ const DEFAULT_API_KEY =
 export const graphqlRequest = createGraphqlRequest(DEFAULT_API_KEY);
 export const executeGraphQL = createExecuteGraphQL(
   DEFAULT_API_URL,
-  DEFAULT_API_KEY,
+  DEFAULT_API_KEY
 );

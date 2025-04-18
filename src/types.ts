@@ -24,6 +24,7 @@ export interface GraphQLClientConfig {
   apiUrl?: string;
   apiKey?: string;
   logger?: Logger;
+  headers?: Record<string, string>;
 }
 
 export interface GraphQLRequestParams<

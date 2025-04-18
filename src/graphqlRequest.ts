@@ -1,8 +1,14 @@
-import { GraphQLRequestOptions, GraphQLResponse, Logger } from "./types";
+import {
+  GraphQLClientConfig,
+  GraphQLRequestOptions,
+  GraphQLResponse,
+  Logger,
+} from "./types";
 
 export const createGraphqlRequest = (
   defaultApiKey?: string,
-  defaultLogger?: Logger
+  defaultLogger?: Logger,
+  defaultHeaders?: GraphQLClientConfig["headers"]
 ) => {
   const logger = defaultLogger || {
     log: console.log,
@@ -35,7 +41,7 @@ export const createGraphqlRequest = (
         headers: {
           "Content-Type": "application/json",
           ...(effectiveApiKey ? { "x-api-key": effectiveApiKey } : {}),
-          ...headers,
+          ...{ ...headers, ...defaultHeaders },
         },
         body: JSON.stringify(options),
         cache: "no-store",
