@@ -8,16 +8,13 @@ export class GraphQLClient {
   private apiUrl?: string;
   private apiKey?: string;
   private headers?: Record<string, string>;
-  private logger!: Logger;
+  private logger?: Logger;
 
   constructor(config: GraphQLClientConfig = {}) {
     this.apiUrl = config.apiUrl;
     this.apiKey = config.apiKey;
     this.headers = config.headers;
-    this.logger = config.logger || {
-      log: console.log,
-      error: console.error,
-    };
+    this.logger = config.logger;
   }
 
   public graphqlRequest = createGraphqlRequest(this.apiKey, this.logger);
