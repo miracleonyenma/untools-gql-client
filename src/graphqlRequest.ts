@@ -10,10 +10,7 @@ export const createGraphqlRequest = (
   defaultLogger?: Logger,
   defaultHeaders?: GraphQLClientConfig["headers"]
 ) => {
-  const logger = defaultLogger || {
-    log: console.log,
-    error: console.error,
-  };
+  const logger = defaultLogger;
 
   return async function graphqlRequest<T>({
     url,
@@ -29,7 +26,7 @@ export const createGraphqlRequest = (
     try {
       const effectiveApiKey = apiKey || defaultApiKey;
 
-      logger.log({
+      logger?.log({
         apiKey: effectiveApiKey ? "[REDACTED]" : undefined,
         headers,
         url,
@@ -59,7 +56,7 @@ export const createGraphqlRequest = (
           const text = await clonedResponse.text();
           errorData.error = text;
         }
-        logger.error("GraphQL request error:", errorData);
+        logger?.error("GraphQL request error:", errorData);
 
         throw (
           errorData?.error ||
@@ -73,7 +70,7 @@ export const createGraphqlRequest = (
 
       return responseBody;
     } catch (error: any) {
-      logger.error("GraphQL request error:", error);
+      logger?.error("GraphQL request error:", error);
 
       return {
         data: undefined,

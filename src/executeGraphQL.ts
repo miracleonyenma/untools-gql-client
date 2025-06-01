@@ -6,10 +6,7 @@ export const createExecuteGraphQL = (
   defaultApiKey?: string,
   defaultLogger?: Logger
 ) => {
-  const logger = defaultLogger || {
-    log: console.log,
-    error: console.error,
-  };
+  const logger = defaultLogger;
 
   const graphqlRequest = createGraphqlRequest(defaultApiKey, logger);
 
@@ -46,7 +43,7 @@ export const createExecuteGraphQL = (
 
       return response.data;
     } catch (error: unknown) {
-      logger.error("GraphQL request error:", error);
+      logger?.error("GraphQL request error:", error);
       throw new Error(
         (error as { message: string }).message || "Unknown error occurred."
       );
