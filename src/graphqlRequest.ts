@@ -6,6 +6,7 @@ import {
   Logger,
 } from "./types";
 import { hasFiles, extractFiles } from "./utils/fileUpload";
+import { convertToFileArray, getFilesLength } from "./utils/fileUpload";
 
 export const createGraphqlRequest = (
   defaultApiKey?: string,
@@ -34,13 +35,15 @@ export const createGraphqlRequest = (
         url,
         options: {
           ...options,
-          files: options.files ? `${options.files.length} files` : undefined,
+          files: options.files
+            ? `${getFilesLength(options.files)} files`
+            : undefined,
         },
       });
 
       // Check if we have files to upload
       const hasFilesToUpload =
-        (options.files?.length || 0) > 0 ||
+        (options.files && getFilesLength(options.files) > 0) ||
         (options.variables && hasFiles(options.variables));
 
       let fetchOptions: RequestInit;
@@ -54,8 +57,8 @@ export const createGraphqlRequest = (
         let fileMap: Record<string, string[]> = {};
 
         // Handle files from options.files
-        if (options.files?.length) {
-          const filesArray = Array.from(options.files);
+        if (options.files && getFilesLength(options.files) > 0) {
+          const filesArray = convertToFileArray(options.files);
           filesArray.forEach((file, index) => {
             filesToProcess.push(file);
             fileMap[index.toString()] = [`variables.files.${index}`];

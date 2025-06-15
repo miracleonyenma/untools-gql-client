@@ -10,7 +10,7 @@ export interface GraphQLClientConfig {
 export interface GraphQLRequestOptions {
   query: string;
   variables?: Record<string, unknown>;
-  files?: File[] | FileList;
+  files?: File[] | FileList | File;
 }
 
 export interface GraphQLRequestParams<TVariables> {
@@ -18,7 +18,7 @@ export interface GraphQLRequestParams<TVariables> {
   variables?: TVariables;
   headers?: Record<string, string>;
   url?: string;
-  files?: File[] | FileList;
+  files?: File[] | FileList | File;
 }
 
 export interface GraphQLResponse<T> {

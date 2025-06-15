@@ -1,9 +1,42 @@
 // ./src/utils/fileUpload.ts
 
+export const getFilesLength = (files: File[] | FileList | File): number => {
+  if (!files) return 0;
+  if (Array.isArray(files)) return files.length;
+  if (typeof FileList !== "undefined" && files instanceof FileList)
+    return files.length;
+  return 1; // Single File object
+};
+
+export const convertToFileArray = (files: File[] | FileList | File): File[] => {
+  if (!files) return [];
+  if (Array.isArray(files)) return files;
+  if (typeof FileList !== "undefined" && files instanceof FileList)
+    return Array.from(files);
+  if (typeof File !== "undefined" && files instanceof File) return [files];
+  return []; // If not a File, return empty array for safety
+};
+
 export const hasFiles = (variables: Record<string, unknown>): boolean => {
   const hasFileValue = (value: unknown): boolean => {
-    if (value instanceof File) return true;
-    if (value instanceof FileList) return true;
+    // Check for File objects
+    if (typeof File !== "undefined" && value instanceof File) return true;
+
+    // Check for FileList objects (browser only)
+    if (typeof FileList !== "undefined" && value instanceof FileList)
+      return true;
+
+    // Check for objects that look like File objects (duck typing)
+    if (
+      value &&
+      typeof value === "object" &&
+      "name" in value &&
+      "type" in value &&
+      "size" in value
+    ) {
+      return true;
+    }
+
     if (Array.isArray(value)) return value.some(hasFileValue);
     if (value && typeof value === "object") {
       return Object.values(value).some(hasFileValue);
@@ -24,16 +57,44 @@ export const extractFiles = (
   const files: File[] = [];
   const map: Record<string, string[]> = {};
 
+  const isFileObject = (value: unknown): value is File => {
+    // Check for actual File instance (browser)
+    if (typeof File !== "undefined" && value instanceof File) return true;
+
+    // Duck typing for File-like objects (server-side or custom implementations)
+    return (
+      !!value &&
+      typeof value === "object" &&
+      "name" in (value as object) &&
+      "type" in (value as object) &&
+      "size" in (value as object)
+    );
+  };
+
+  const isFileListObject = (value: unknown): boolean => {
+    // Check for FileList (browser only)
+    if (typeof FileList !== "undefined" && value instanceof FileList)
+      return true;
+
+    // Check for array-like objects with File-like items
+    return (
+      !!value &&
+      typeof value === "object" &&
+      "length" in value &&
+      typeof (value as any).length === "number"
+    );
+  };
+
   const processValue = (value: unknown, path: string): unknown => {
-    if (value instanceof File) {
+    if (isFileObject(value)) {
       const index = files.length;
-      files.push(value);
+      files.push(value as File);
       map[index.toString()] = [`variables.${path}`];
       return null;
     }
 
-    if (value instanceof FileList) {
-      const fileArray = Array.from(value);
+    if (isFileListObject(value)) {
+      const fileArray = Array.from(value as FileList);
       return fileArray.map((file, i) => processValue(file, `${path}.${i}`));
     }
 
