@@ -1,3 +1,4 @@
+// ./src/executeGraphQL.ts - Enhanced with file upload support
 import { GraphQLRequestParams, Logger } from "./types";
 import { createGraphqlRequest } from "./graphqlRequest";
 
@@ -18,6 +19,7 @@ export const createExecuteGraphQL = (
     variables,
     headers = {},
     url = defaultApiUrl,
+    files,
   }: GraphQLRequestParams<TVariables>): Promise<TResponse> {
     if (!url) {
       throw new Error(
@@ -28,7 +30,7 @@ export const createExecuteGraphQL = (
     try {
       const response = await graphqlRequest<TResponse>({
         url,
-        options: { query, variables },
+        options: { query, variables, files },
         headers,
         apiKey: defaultApiKey,
       });

@@ -1,6 +1,34 @@
+// ./src/types.ts
+
+export interface GraphQLClientConfig {
+  apiUrl?: string;
+  apiKey?: string;
+  headers?: Record<string, string>;
+  logger?: Logger;
+}
+
 export interface GraphQLRequestOptions {
   query: string;
-  variables?: Record<string, any>;
+  variables?: Record<string, unknown>;
+  files?: File[] | FileList;
+}
+
+export interface GraphQLRequestParams<TVariables> {
+  query: string;
+  variables?: TVariables;
+  headers?: Record<string, string>;
+  url?: string;
+  files?: File[] | FileList;
+}
+
+export interface GraphQLResponse<T> {
+  data?: T;
+  errors?: Array<{ message: string; [key: string]: any }>;
+}
+
+export interface Logger {
+  log: (data: any) => void;
+  error: (message: string, data?: any) => void;
 }
 
 export interface GraphQLError {
@@ -8,16 +36,6 @@ export interface GraphQLError {
   locations?: { line: number; column: number }[];
   path?: string[];
   extensions?: Record<string, any>;
-}
-
-export interface GraphQLResponse<T> {
-  data?: T;
-  errors?: GraphQLError[];
-}
-
-export interface Logger {
-  log: (...args: any[]) => void;
-  error: (...args: any[]) => void;
 }
 
 export interface GraphQLClientConfig {

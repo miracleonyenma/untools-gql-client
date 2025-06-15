@@ -1,8 +1,10 @@
+// ./src/index.ts - Main client class (unchanged, but now supports file uploads)
 import { createGraphqlRequest } from "./graphqlRequest";
 import { createExecuteGraphQL } from "./executeGraphQL";
 import { GraphQLClientConfig, Logger } from "./types";
 
 export * from "./types";
+export * from "./utils/fileUpload";
 
 export class GraphQLClient {
   private apiUrl?: string;
