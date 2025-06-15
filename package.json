@@ -1,6 +1,6 @@
 {
   "name": "@untools/gql-client",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "A simple GraphQL client for making requests in JavaScript/TypeScript applications",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
