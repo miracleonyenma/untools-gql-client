@@ -9,8 +9,8 @@ export * from "./utils/fileUpload";
 export class GraphQLClient {
   private apiUrl?: string;
   private apiKey?: string;
-  private headers?: Record<string, string>;
   private logger?: Logger;
+  headers?: Record<string, string>;
 
   constructor(config: GraphQLClientConfig = {}) {
     this.apiUrl = config.apiUrl;
