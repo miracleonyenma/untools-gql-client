@@ -5,6 +5,9 @@ export interface GraphQLClientConfig {
   apiKey?: string;
   headers?: Record<string, string>;
   logger?: Logger;
+  wsUrl?: string; // WebSocket URL for subscriptions
+  wsHeaders?: Record<string, string>; // Headers for WebSocket connection
+  wsProtocols?: string | string[]; // WebSocket protocols
 }
 
 export interface GraphQLRequestOptions {
@@ -27,7 +30,7 @@ export interface GraphQLResponse<T> {
 }
 
 export interface Logger {
-  log: (data: any) => void;
+  log: (...args: any[]) => void;
   error: (message: string, data?: any) => void;
 }
 
@@ -52,4 +55,20 @@ export interface GraphQLRequestParams<
   variables?: TVariables;
   headers?: { [key: string]: string };
   url?: string;
+}
+
+export interface SubscriptionOptions {
+  query: string;
+  variables?: Record<string, unknown>;
+  onNext?: (data: any) => void;
+  onError?: (error: Error) => void;
+  onComplete?: () => void;
+  headers?: Record<string, string>;
+}
+
+export interface WebSocketConnection {
+  subscribe: (options: SubscriptionOptions) => () => void; // Returns unsubscribe function
+  close: () => void;
+  reconnect: () => void;
+  isConnected: () => boolean;
 }
