@@ -1,4 +1,4 @@
-// ./src/graphqlRequest.ts - Enhanced with file upload support
+// ./src/graphqlRequest.ts - Enhanced with file upload support and guaranteed headers
 import {
   GraphQLClientConfig,
   GraphQLRequestOptions,
@@ -45,6 +45,12 @@ export const createGraphqlRequest = (
       const hasFilesToUpload =
         (options.files && getFilesLength(options.files) > 0) ||
         (options.variables && hasFiles(options.variables));
+
+      // Base fetch options that are always applied
+      const baseFetchOptions: RequestInit = {
+        method: "POST", // Always ensure POST method
+        cache: "no-store",
+      };
 
       let fetchOptions: RequestInit;
 
@@ -104,29 +110,47 @@ export const createGraphqlRequest = (
           formData.append(index.toString(), file);
         });
 
+        // Build headers for multipart request
+        const multipartHeaders: Record<string, string> = {
+          // Don't set Content-Type for FormData - browser will set it with boundary
+          // Add API key if available
+          ...(effectiveApiKey ? { "x-api-key": effectiveApiKey } : {}),
+          // Merge headers in correct order: defaultHeaders first, then passed headers
+          ...(defaultHeaders || {}),
+          ...headers,
+        };
+
         fetchOptions = {
-          method: "POST",
-          headers: {
-            // Don't set Content-Type for FormData - browser will set it with boundary
-            ...(effectiveApiKey ? { "x-api-key": effectiveApiKey } : {}),
-            ...{ ...headers, ...defaultHeaders },
-          },
+          ...baseFetchOptions,
+          headers: multipartHeaders,
           body: formData,
-          cache: "no-store",
         };
       } else {
         // Handle regular JSON request
+        // Build headers for JSON request
+        const jsonHeaders: Record<string, string> = {
+          "Content-Type": "application/json",
+          // Add API key if available
+          ...(effectiveApiKey ? { "x-api-key": effectiveApiKey } : {}),
+          // Merge headers in correct order: defaultHeaders first, then passed headers
+          ...(defaultHeaders || {}),
+          ...headers,
+        };
+
         fetchOptions = {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            ...(effectiveApiKey ? { "x-api-key": effectiveApiKey } : {}),
-            ...{ ...headers, ...defaultHeaders },
-          },
+          ...baseFetchOptions,
+          headers: jsonHeaders,
           body: JSON.stringify(options),
-          cache: "no-store",
         };
       }
+
+      // Log the final fetch options for debugging (without sensitive data)
+      logger?.log("Final fetch options:", {
+        method: fetchOptions.method,
+        headers: Object.keys(fetchOptions.headers || {}),
+        hasBody: !!fetchOptions.body,
+        bodyType: fetchOptions.body instanceof FormData ? "FormData" : "JSON",
+      });
 
       const response = await fetch(url, fetchOptions);
       const clonedResponse = response.clone();
