@@ -5,7 +5,8 @@ import { createGraphqlRequest } from "./graphqlRequest";
 export const createExecuteGraphQL = (
   defaultApiUrl?: string,
   defaultApiKey?: string,
-  defaultLogger?: Logger
+  defaultLogger?: Logger,
+  defaultHeaders?: Record<string, string>
 ) => {
   const logger = defaultLogger;
 
@@ -31,7 +32,10 @@ export const createExecuteGraphQL = (
       const response = await graphqlRequest<TResponse>({
         url,
         options: { query, variables, files },
-        headers,
+        headers: {
+          ...defaultHeaders,
+          ...headers,
+        },
         apiKey: defaultApiKey,
       });
 

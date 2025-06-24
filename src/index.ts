@@ -35,7 +35,12 @@ export class GraphQLClient {
   );
 
   public executeGraphQL = () => {
-    return createExecuteGraphQL(this.apiUrl, this.apiKey, this.logger);
+    return createExecuteGraphQL(
+      this.apiUrl,
+      this.apiKey,
+      this.logger,
+      this.headers
+    );
   };
 
   private getWebSocketClient(): GraphQLWebSocketClient {
